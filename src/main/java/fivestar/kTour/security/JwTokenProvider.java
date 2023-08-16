@@ -1,2 +1,2 @@
-package fivestar.kTour.Security;public class JwTokenProvider {
-}
+//package fivestar.kTour.Security;public class JwTokenProvider {
+//}

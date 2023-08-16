@@ -6,13 +6,13 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @NoArgsConstructor
-@Table(name = "TourList")
+@Table(name = "Tourlist")
 @Data
-public class TourList {
+public class Tourlist {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long listID;
-    private String tourList;
+    private String Tourlist;
 
     @ManyToOne
     @JoinColumn(name = "user_email")

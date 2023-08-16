@@ -1,2 +1,2 @@
-package fivestar.kTour.repository;public class tourListRepository {
+package fivestar.kTour.repository;public class TourlistRepository {
 }
