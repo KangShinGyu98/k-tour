@@ -7,6 +7,6 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class GetMyTourlistsReqDto {
-    private String userEmail;
+public class ResponseDto {
+    private boolean success;
 }

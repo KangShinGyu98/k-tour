@@ -6,6 +6,6 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class GetOthersTourlistsReqDto {
+public class GetOthersTourlistsDto {
     private String userEmail;
 }

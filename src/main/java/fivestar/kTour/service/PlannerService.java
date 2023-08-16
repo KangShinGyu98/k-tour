@@ -1,11 +1,10 @@
 package fivestar.kTour.service;
 
-import fivestar.kTour.dto.GetMyTourlistsReqDto;
-import fivestar.kTour.dto.GetMyTourlistsResDto;
-import fivestar.kTour.dto.GetOthersTourlistsReqDto;
-import fivestar.kTour.dto.GetOthersTourlistsResDto;
+import fivestar.kTour.dto.*;
 
 public interface PlannerService {
-    GetMyTourlistsResDto GetMyTourlists(GetMyTourlistsReqDto dto);
-    GetOthersTourlistsResDto GetOthersTourlists(GetOthersTourlistsReqDto dto);
+    GetMyTourlistsResDto GetMyTourlists(GetMyTourlistsDto dto);
+    GetOthersTourlistsResDto GetOthersTourlists(GetOthersTourlistsDto dto);
+    ResponseDto AddNewTourlist(AddNewTourlistDto dto);
+    ResponseDto UpdateTourlist(UpdateTourlistDto dto);
 }
