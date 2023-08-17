@@ -1,25 +1,20 @@
 package fivestar.kTour.domain;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
-
-import java.util.List;
-
 @Entity
 @NoArgsConstructor
-@Table(name = "Tourlist")
+@Table(name = "Plan")
 @Data
-public class Tourlist {
+public class Plan {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long listID;
-    private String tourlist; //
+    private Long planId;
+    private String planName;
+    private String planNote;
+    private boolean passed;
     @ManyToOne
     @JoinColumn(name = "user_email")
     private User user;
-
-
 }

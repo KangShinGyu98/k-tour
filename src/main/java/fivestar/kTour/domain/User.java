@@ -17,9 +17,7 @@ public class User {
     private String userNickname;
     private String userAgeRange;
     private String userPicture;
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "user_email")
-    private List<Tourlist> Tourlists;
+
 }
 
 

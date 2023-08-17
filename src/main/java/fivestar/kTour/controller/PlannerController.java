@@ -29,8 +29,8 @@ public class PlannerController {
 //    public G
 
     @PatchMapping("/plans/update")//준비중인 여행 <=> 지난 여행 토글버튼 figma page 4
-    public ResponseDto updateTourlistsDto(@RequestBody UpdateTourlistDto dto){
-        ResponseDto result = plannerServiceImpl.UpdateTourlist(dto);
+    public ResponseDto TogglePassedTourlist(@RequestBody TogglePassedTourlistDto dto){
+        ResponseDto result = plannerServiceImpl.TogglePassedTourlist(dto);
         return result;
     }
 }

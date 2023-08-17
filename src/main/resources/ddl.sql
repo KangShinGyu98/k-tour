@@ -1,6 +1,8 @@
-
-Create database ktour;
 use ktour;
+drop table tourlist;
+drop table user;
+
+
 #객체
 #User(email[PK], nickname, age_range,gender ,picture);
 Create Table User(
@@ -14,15 +16,28 @@ Create Table User(
 # email - tour_list = 1:n
 #Tourlist(list_number[PK], email,tour_list)
 
-drop table Tourlist;
 
-CREATE Table Tourlist(
-	list_id bigInt primary key auto_increment,
-	tour_list text not null,
+Create Table Plan(
+	plan_id bigInt primary key auto_increment,
+    plan_name varchar(30) not null,
+    plan_note varchar(200),
+    user_email varchar(50) not null,
     passed boolean,
-    user_email Varchar(50),
     FOREIGN KEY (user_email) REFERENCES user(user_email)
         ON DELETE CASCADE
         ON UPDATE CASCADE
+);
+
+CREATE Table Place(
+	Place_id bigInt primary key auto_increment,
+	Place_name varchar(30) not null,
+    place_note varchar(200),
+    passed boolean,
+    plan_id bigint not null,
+    FOREIGN KEY (plan_id) REFERENCES Plan(plan_id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
+    x_pos double,
+    y_pos double
 );
 

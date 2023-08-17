@@ -10,5 +10,5 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class GetOthersTourlistsResDto {
-    private List<Tourlist> othersTourlists;
+    private String othersTourlists; //List<Tourlist> = List<List<String>>
 }

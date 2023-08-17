@@ -11,5 +11,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AddNewTourlistDto {
-    private Tourlist tourlist;
+    private String userEmail;
+    private String tourlist;//List<String>
 }

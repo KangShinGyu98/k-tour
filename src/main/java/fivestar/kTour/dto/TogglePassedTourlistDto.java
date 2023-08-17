@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UpdateTourlistDto {
-    private Tourlist tourlist;
+public class TogglePassedTourlistDto {
+    private String userEmail;
+    private Long tourlistId;
+    private Boolean passed;
 }
