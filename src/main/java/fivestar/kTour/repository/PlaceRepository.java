@@ -8,5 +8,5 @@ import java.util.List;
 
 @Repository
 public interface PlaceRepository extends JpaRepository<Place,Long> {
-    List<Place> findAllByPlaceName(String placeName);
+    List<Place> findAllByPlan_PlanId(Long planId);
 }

@@ -11,11 +11,12 @@ import java.util.List;
 @NoArgsConstructor
 public class GetMyPlansResDto {
     private List<PlanPlacePair> planPlacePairs;
+    @Data
     public static class PlanPlacePair{
-        private String planName;
+        private Long planId;
         private List<String> places;
-        public PlanPlacePair(String planName, List<String> places){
-            this.planName=planName;
+        public PlanPlacePair(Long planId, List<String> places){
+            this.planId=planId;
             this.places = places;
         }
 

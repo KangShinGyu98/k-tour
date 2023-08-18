@@ -15,11 +15,12 @@ Create Table User(
 #Tourlist
 # email - tour_list = 1:n
 #Tourlist(list_number[PK], email,tour_list)
-
+drop table place;
+drop table Plan;
 
 Create Table Plan(
 	plan_id bigInt primary key auto_increment,
-	plan_name varchar(30) not null,
+	plan_name varchar(30) null,
 	plan_note varchar(200),
 	user_email varchar(50) not null,
 	passed boolean,

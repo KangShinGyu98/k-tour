@@ -13,13 +13,12 @@ public class GetOthersTourlistsResDto {
     //user > plan > places 계층 구조를 가지기 떄문에 inner class 사용
     private String userEmail;
     private List<PlanPlacePair> planPlacePairs;
-
-    public class PlanPlacePair{
-        private String planName;
+    @Data
+    public static class PlanPlacePair{
+        private Long planId;
         private List<String> places;
-
-        PlanPlacePair(String planName, List<String>places){
-            this.planName=planName;
+        public PlanPlacePair(Long planId, List<String> places){
+            this.planId=planId;
             this.places = places;
         }
     }

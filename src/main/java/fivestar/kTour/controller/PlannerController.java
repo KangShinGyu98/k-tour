@@ -17,6 +17,10 @@ import org.springframework.web.bind.annotation.*;
 public class PlannerController {
     private final PlannerServiceImpl plannerServiceImpl;
 
+    @GetMapping("/hello")
+    public String hello(){
+        return "hello";
+    }
 
     @GetMapping("/plans")//내 플렌 조회 figma page4
     public GetMyPlansResDto getMyPlans(@RequestBody GetMyPlansDto dto){
