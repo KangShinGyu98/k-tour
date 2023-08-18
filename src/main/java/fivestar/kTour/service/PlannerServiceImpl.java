@@ -53,12 +53,6 @@ public class PlannerServiceImpl implements PlannerService{
         return response;
     }
 
-//    @Override
-//    public GetOthersTourlistsResDto GetOthersTourlists(GetOthersTourlistsDto dto) {
-//        List<Tourlist> tourlists =  tourlistRepository.findAllByUserEmailNot(dto.getUserEmail());
-//        GetOthersTourlistsResDto response = new GetOthersTourlistsResDto(tourlists.toString());
-//        return response;
-//    }
 
     @Override
     public GlobalResponseDto AddNewPlan(AddNewPlanDto dto) {
