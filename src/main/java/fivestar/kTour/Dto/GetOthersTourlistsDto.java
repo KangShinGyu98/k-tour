@@ -1,12 +1,11 @@
-package fivestar.kTour.dto;
+package fivestar.kTour.Dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ResponseDto {
-    private boolean success;
+public class GetOthersTourlistsDto {
+    private String userEmail;
 }

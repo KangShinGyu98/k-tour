@@ -1,5 +1,5 @@
 use ktour;
-drop table tourlist;
+# drop table tourlist;
 drop table user;
 
 
@@ -19,10 +19,10 @@ Create Table User(
 
 Create Table Plan(
 	plan_id bigInt primary key auto_increment,
-    plan_name varchar(30) not null,
-    plan_note varchar(200),
-    user_email varchar(50) not null,
-    passed boolean,
+	plan_name varchar(30) not null,
+	plan_note varchar(200),
+	user_email varchar(50) not null,
+	passed boolean,
     FOREIGN KEY (user_email) REFERENCES user(user_email)
         ON DELETE CASCADE
         ON UPDATE CASCADE
@@ -33,11 +33,11 @@ CREATE Table Place(
 	Place_name varchar(30) not null,
     place_note varchar(200),
     passed boolean,
-    plan_id bigint not null,
+    x_pos double,
+    y_pos double,
+	plan_id bigint not null,
     FOREIGN KEY (plan_id) REFERENCES Plan(plan_id)
         ON DELETE CASCADE
-        ON UPDATE CASCADE,
-    x_pos double,
-    y_pos double
+        ON UPDATE CASCADE
 );
 

@@ -1,7 +1,11 @@
 package fivestar.kTour.controller;
 
-import fivestar.kTour.dto.*;
-import fivestar.kTour.repository.UserRepository;
+import fivestar.kTour.Dto.AddNewPlanDto;
+
+import fivestar.kTour.Dto.GetMyPlansDto;
+import fivestar.kTour.Dto.GetMyPlansResDto;
+import fivestar.kTour.Dto.GlobalResponseDto;
+import fivestar.kTour.Dto.TogglePassedPlansDto;
 import fivestar.kTour.service.PlannerServiceImpl;
 
 import lombok.RequiredArgsConstructor;
@@ -12,25 +16,23 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class PlannerController {
     private final PlannerServiceImpl plannerServiceImpl;
-    private final UserRepository userRepository;
 
-    @PostMapping("/plans/new") // figma page 1 button
-    public ResponseDto AddNewTourlist(@RequestBody AddNewTourlistDto dto){
-        ResponseDto result = plannerServiceImpl.AddNewTourlist(dto);
-        return result;
-    }
 
     @GetMapping("/plans")//내 플렌 조회 figma page4
-    public GetMyTourlistsResDto getMyTourlists(@RequestBody GetMyTourlistsDto dto){
-        GetMyTourlistsResDto result = plannerServiceImpl.GetMyTourlists(dto);
+    public GetMyPlansResDto getMyPlans(@RequestBody GetMyPlansDto dto){
+        GetMyPlansResDto result = plannerServiceImpl.GetMyPlans(dto);
         return result;
     }
 //    @GetMapping("/plans/detail") //플렌 디테일 페이지 필요?
 //    public G
-
+    @PostMapping("/plans/new") // figma page 1 button
+    public GlobalResponseDto AddNewPlan(@RequestBody AddNewPlanDto dto){
+        GlobalResponseDto result = plannerServiceImpl.AddNewPlan(dto);
+        return result;
+    }
     @PatchMapping("/plans/update")//준비중인 여행 <=> 지난 여행 토글버튼 figma page 4
-    public ResponseDto TogglePassedTourlist(@RequestBody TogglePassedTourlistDto dto){
-        ResponseDto result = plannerServiceImpl.TogglePassedTourlist(dto);
+    public GlobalResponseDto TogglePassedPlan(@RequestBody TogglePassedPlansDto dto){
+        GlobalResponseDto result = plannerServiceImpl.TogglePassedPlans(dto);
         return result;
     }
 }

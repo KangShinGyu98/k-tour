@@ -1,6 +1,5 @@
-package fivestar.kTour.dto;
+package fivestar.kTour.Dto;
 
-import fivestar.kTour.domain.Tourlist;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,8 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class TogglePassedTourlistDto {
+public class GetMyPlansDto {
     private String userEmail;
-    private Long tourlistId;
-    private Boolean passed;
 }
+

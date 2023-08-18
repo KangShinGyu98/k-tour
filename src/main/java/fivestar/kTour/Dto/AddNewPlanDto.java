@@ -1,6 +1,5 @@
-package fivestar.kTour.dto;
+package fivestar.kTour.Dto;
 
-import fivestar.kTour.domain.Tourlist;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,7 +9,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class AddNewTourlistDto {
+public class AddNewPlanDto {
     private String userEmail;
-    private String tourlist;//List<String>
+    private List<String> places;//List<String>
 }

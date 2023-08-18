@@ -1,10 +1,10 @@
 package fivestar.kTour.service;
 
-import fivestar.kTour.dto.*;
+import fivestar.kTour.Dto.*;
 
 public interface PlannerService {
-    GetMyTourlistsResDto GetMyTourlists(GetMyTourlistsDto dto);
+    GetMyPlansResDto GetMyPlans(GetMyPlansDto dto);
 //    GetOthersTourlistsResDto GetOthersTourlists(GetOthersTourlistsDto dto);
-    ResponseDto AddNewTourlist(AddNewTourlistDto dto);
-    ResponseDto TogglePassedTourlist(TogglePassedTourlistDto dto);
+    GlobalResponseDto AddNewPlan(AddNewPlanDto dto);
+    GlobalResponseDto TogglePassedPlans(TogglePassedPlansDto dto);
 }
