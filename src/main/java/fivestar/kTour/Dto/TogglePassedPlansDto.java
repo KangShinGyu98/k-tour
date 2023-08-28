@@ -9,6 +9,7 @@ import java.util.List;
 public record TogglePassedPlansDto (
         @NotBlank
         String userEmail,
+//        @NotBlank
         List<Plan> plans
 ) {
 }

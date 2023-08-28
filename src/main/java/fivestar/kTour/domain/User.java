@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -17,7 +18,8 @@ public class User {
     private String userNickname;
     private String userAgeRange;
     private String userPicture;
-
+    private LocalDateTime createAt;
+    private LocalDateTime modifiedAt;
 }
 
 

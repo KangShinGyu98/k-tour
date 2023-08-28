@@ -1,5 +1,5 @@
 package fivestar.kTour.service;
-
+import java.util.NoSuchElementException;
 import fivestar.kTour.domain.Place;
 import fivestar.kTour.domain.Plan;
 import fivestar.kTour.domain.User;
@@ -65,7 +65,7 @@ public class PlannerServiceImpl implements PlannerService{
             throw new IllegalArgumentException("등록되지 않은 사용자 입니다.");
         }
 
-        User user = userRepository.findById(dto.userEmail()).orElseThrow();
+        User user = userRepository.findById(dto.userEmail()).orElseThrow(() -> new NoSuchElementException("User not found"));
 
         //plan table save
         Plan newPlan = new Plan(dto.planName(),dto.planNote(),user);

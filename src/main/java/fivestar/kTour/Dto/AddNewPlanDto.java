@@ -12,7 +12,7 @@ public record AddNewPlanDto (
         @NotBlank
         String planName,
         String planNote,
-        @NotBlank
+//        @NotBlank
         List<Place> places
 ){
 }

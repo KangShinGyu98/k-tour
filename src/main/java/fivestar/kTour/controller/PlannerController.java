@@ -30,8 +30,7 @@ public class PlannerController {
         List<GetMyPlansResDto> result = plannerServiceImpl.GetMyPlans(dto);
         return result;
     }
-//    @GetMapping("/plans/detail") //플렌 디테일 페이지 필요?
-//    public G
+
     @PostMapping("/plans/new") // figma page 1 button
     public GlobalResponseDto AddNewPlan(@Validated @RequestBody AddNewPlanDto dto){
         GlobalResponseDto result = plannerServiceImpl.AddNewPlan(dto);

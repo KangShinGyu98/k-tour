@@ -1,0 +1,102 @@
+#get plan
+GET http://localhost:4000/plans
+{
+    "userEmail":"user1@example.com"
+}
+
+#add new plan
+POST http://localhost:4000/plans/new
+{
+    "userEmail":"user1@example.com",
+    "planName" : "New Plan 1",
+    "planNote" : "this is test for /plans/new",
+    "places": [
+            {
+                "placeId": 1,
+                "placeName": "new Place 1",
+                "placeNote": "Place 1 Note",
+                "passed": true,
+                "createAt": "2023-08-29T03:15:26",
+                "modifiedAt": "2023-08-29T03:15:26",
+                "plan": {
+                    "planId": 1,
+                    "planName": "Plan 1",
+                    "planNote": "Plan 1 Note",
+                    "passed": true,
+                    "createAt": "2023-08-29T03:15:24",
+                    "modifiedAt": "2023-08-29T03:15:24",
+                    "user": {
+                        "userEmail": "user1@example.com",
+                        "userNickname": "User 1",
+                        "userAgeRange": "20-30",
+                        "userPicture": "user1_picture.jpg",
+                        "createAt": "2023-08-29T03:15:20",
+                        "modifiedAt": "2023-08-29T03:15:20"
+                    }
+                },
+                "ypos": 67.89,
+                "xpos": 12.345
+            },
+            {
+                "placeId": 2,
+                "placeName": "new Place 2",
+                "placeNote": "Place 2 Note",
+                "passed": false,
+                "createAt": "2023-08-29T03:15:26",
+                "modifiedAt": "2023-08-29T03:15:26",
+                "plan": {
+                    "planId": 1,
+                    "planName": "Plan 1",
+                    "planNote": "Plan 1 Note",
+                    "passed": true,
+                    "createAt": "2023-08-29T03:15:24",
+                    "modifiedAt": "2023-08-29T03:15:24",
+                    "user": {
+                        "userEmail": "user1@example.com",
+                        "userNickname": "User 1",
+                        "userAgeRange": "20-30",
+                        "userPicture": "user1_picture.jpg",
+                        "createAt": "2023-08-29T03:15:20",
+                        "modifiedAt": "2023-08-29T03:15:20"
+                    }
+                },
+                "ypos": 89.012,
+                "xpos": 34.567
+            }
+        ]
+}
+
+#change passed value,
+PATCH http://localhost:4000/plans/update
+
+{    "userEmail":"user1@example.com",
+    "plans": [{
+                    "planId": 1,
+                    "planName": "Plan 1",
+                    "passed": false,
+                    "user": {
+                        "userEmail": "user1@example.com",
+                        "userNickname": "User 1",
+                        "userAgeRange": "20-30",
+                        "userPicture": "user1_picture.jpg",
+                        "createAt": "2023-08-29T03:15:20",
+                        "modifiedAt": "2023-08-29T03:15:20"
+                    }
+                },{
+                    "planId": 2,
+                    "planName": "Plan 1",
+                    "planNote": "Plan 1 Note",
+                    "passed": false,
+                    "createAt": "2023-08-29T03:15:24",
+                    "modifiedAt": "2023-08-29T03:15:24",
+                    "user": {
+                        "userEmail": "user1@example.com",
+                        "userNickname": "User 1",
+                        "userAgeRange": "20-30",
+                        "userPicture": "user1_picture.jpg",
+                        "createAt": "2023-08-29T03:15:20",
+                        "modifiedAt": "2023-08-29T03:15:20"
+                    }
+                }]
+
+}
