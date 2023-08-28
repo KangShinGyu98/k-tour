@@ -12,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 
 @RestController
 @RequiredArgsConstructor
@@ -24,8 +26,8 @@ public class PlannerController {
     }
 
     @GetMapping("/plans")//내 플렌 조회 figma page4
-    public GetMyPlansResDto getMyPlans(@Validated @RequestBody GetMyPlansDto dto){
-        GetMyPlansResDto result = plannerServiceImpl.GetMyPlans(dto);
+    public List<GetMyPlansResDto> getMyPlans(@Validated @RequestBody GetMyPlansDto dto){
+        List<GetMyPlansResDto> result = plannerServiceImpl.GetMyPlans(dto);
         return result;
     }
 //    @GetMapping("/plans/detail") //플렌 디테일 페이지 필요?

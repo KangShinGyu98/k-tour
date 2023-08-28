@@ -15,60 +15,77 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
+
 public class PlannerServiceImpl implements PlannerService{
     private static final Logger logger = LoggerFactory.getLogger(PlannerServiceImpl.class);
     private final PlaceRepository placeRepository;
     private final PlanRepository planRepository;
     private final UserRepository userRepository;
+
     @Override //userEmail => plans{Long planId, List<String> places}
-    public GetMyPlansResDto GetMyPlans(GetMyPlansDto dto) {
+    @Transactional
+    public List<GetMyPlansResDto> GetMyPlans(GetMyPlansDto dto) {
         //빈 response dto 생성
-        GetMyPlansResDto response = new GetMyPlansResDto(new ArrayList<>());
+        List<GetMyPlansResDto> response = new ArrayList<>();
 
         //사용자 email 체크
-        if(!userRepository.existsById(dto.getUserEmail())) {
+        if(!userRepository.existsById(dto.userEmail())) {
             throw new IllegalArgumentException("등록되지 않은 사용자 입니다.");
         }
 
         //email 에 맞는 plans 받아오기
-        List<Plan> plans = planRepository.findAllByUser_UserEmail(dto.getUserEmail());
+        List<Plan> plans = planRepository.findAllByUser_UserEmail(dto.userEmail());
         logger.info(plans.toString());
         //plans list 를 순회하며 places 및 response dto 설정
         plans.forEach(plan->{
             //places 를 placeNames 로 변환함
-            List<String> placeNames = placeRepository.findAllByPlan_PlanId(plan.getPlanId()).stream().map(place -> place.getPlaceName()).collect(Collectors.toList());;
+            //place name만 줄까? 그냥 다 줄까?
+            //name 만 주는 경우
+            //List<Place> places = placeRepository.findAllByPlan_PlanId(plan.getPlanId()).stream().map(place -> place.getPlaceName()).collect(Collectors.toList());
+            List<Place> places = placeRepository.findAllByPlan_PlanId(plan.getPlanId());
+
             //plan, places pair 를 response에 추가함
             logger.info(plan.getPlanName());
-            logger.info(placeNames.toString());
-            response.getPlanPlacePairs().add(new GetMyPlansResDto.PlanPlacePair(plan.getPlanId(), placeNames));
+            logger.info(places.toString());
+            response.add(new GetMyPlansResDto(plan.getPlanId(), plan.getPlanName(), places));
         });
-//        plan1 + List<Place>()
         return response;
     }
 
-
     @Override
+    @Transactional
     public GlobalResponseDto AddNewPlan(AddNewPlanDto dto) {
-        if(!userRepository.existsById(dto.getUserEmail())) {
+        //사용자 email이 존재하는지 체크
+        if(!userRepository.existsById(dto.userEmail())) {
             throw new IllegalArgumentException("등록되지 않은 사용자 입니다.");
         }
-        User user = userRepository.findById(dto.getUserEmail()).get();
-        Plan newPlan = new Plan();
-        newPlan.setUser(user);
+
+        User user = userRepository.findById(dto.userEmail()).orElseThrow();
+
+        //plan table save
+        Plan newPlan = new Plan(dto.planName(),dto.planNote(),user);
         planRepository.save(newPlan);
-        dto.getPlaces().forEach(p -> {
-            Place newPlace = new Place();
-            newPlace.setPlaceName(p);
-            newPlace.setPlan(newPlan);
+
+        //place table save
+        dto.places().forEach(place -> {
+            Place newPlace = Place.builder()
+                    .placeName(place.getPlaceName())
+                    .placeNote(place.getPlaceNote()) // placeNote가 null이어도 무시되지 않음
+                    .plan(newPlan)       // somePlan이 null이어도 무시되지 않음
+                    .xPos(place.getXPos())
+                    .yPos(place.getYPos())
+                    .passed(false)
+                    .build();
             placeRepository.save(newPlace);
         });
+        //build를 사용한 이유는
+        // 1. 생성자를 일일이 생성해주지 않고, null을 받아서
+        // 2. plan을 주입하기 위해서
 
         return new GlobalResponseDto(true);
     }
@@ -76,15 +93,22 @@ public class PlannerServiceImpl implements PlannerService{
     @Override
     @Transactional
     public GlobalResponseDto TogglePassedPlans(TogglePassedPlansDto dto) {
-        if(!userRepository.existsById(dto.getUserEmail())) {
+//        @NotBlank
+//        String userEmail,
+//        List<Plan> plans
+
+        if(!userRepository.existsById(dto.userEmail())) {
             throw new IllegalArgumentException("등록되지 않은 사용자 입니다.");
         }
 //        User user = userRepository.findById(dto.getUserEmail()).get();
         logger.info(dto.toString());
-
-        dto.getPlanIdPassedPairs().forEach(pair->{
-            planRepository.updatePassedStatus(pair.getPlanId(), pair.isPassed());
-        });
+        dto.plans().forEach(plan ->
+                    //plan id 로 plan을 찾아서 passed 를 dto 에서 제공하는 passed 값으로 변경함
+                planRepository
+                    .findById(plan.getPlanId())
+                    .ifPresent(p -> p.setPassed(plan.getPassed())
+                    )
+            );
 
         return new GlobalResponseDto(true);
     }
