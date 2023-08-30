@@ -1,25 +1,37 @@
 package fivestar.kTour.domain;
 
-import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.List;
 
+@Data
 @Entity
 @NoArgsConstructor
-@Table(name = "User")
-@Data
+@Table(name = "`User`", indexes = {
+        @Index(name = "idx_user_email_idx", columnList = "user_email")})
 public class User {
+
     @Id
     @Column(name = "user_email")
     private String userEmail;
-    private String userNickname;
-    private String userAgeRange;
-    private String userPicture;
+
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "user_profile_id")
+    private UserProfile userProfile;
+
+    private String role;
+
     private LocalDateTime createAt;
+
     private LocalDateTime modifiedAt;
+
+    public User(String email, String provider, String providerId) {
+        this.userEmail = email;
+        this.role = "ROLE_USER";
+        this.userProfile = new UserProfile(this, provider, providerId);
+    }
 }
 
 
