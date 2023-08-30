@@ -1,7 +1,7 @@
 package fivestar.kTour.Dto;
 
 
-import jakarta.validation.constraints.NotBlank;
+import javax.validation.constraints.NotBlank;
 
 public record GetMyPlansDto (@NotBlank String userEmail){
 }
