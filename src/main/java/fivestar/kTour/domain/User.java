@@ -27,10 +27,10 @@ public class User {
 
     private LocalDateTime modifiedAt;
 
-    public User(String email, String provider, String providerId) {
+    public User(String email, String nickname, String imageUrl, Integer ageRange, String provider, String providerId) {
         this.userEmail = email;
         this.role = "ROLE_USER";
-        this.userProfile = new UserProfile(this, provider, providerId);
+        this.userProfile = new UserProfile(this, nickname, imageUrl, ageRange, provider, providerId);
     }
 }
 
