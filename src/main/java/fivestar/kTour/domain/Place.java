@@ -1,9 +1,9 @@
 package fivestar.kTour.domain;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
+import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 
 @Entity
@@ -14,9 +14,11 @@ import java.time.LocalDateTime;
 @Builder
 @Setter
 public class Place {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long placeId;
+
     @NotBlank
     private String placeName;
     private String placeNote;
@@ -25,9 +27,9 @@ public class Place {
     private Double yPos;
     private LocalDateTime createAt;
     private LocalDateTime modifiedAt;
+
     @ManyToOne
     @JoinColumn(name = "plan_id")
     private Plan plan;
-
 }
 

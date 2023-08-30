@@ -1,27 +1,29 @@
 package fivestar.kTour.service;
-import java.util.NoSuchElementException;
+
+import fivestar.kTour.Dto.*;
 import fivestar.kTour.domain.Place;
 import fivestar.kTour.domain.Plan;
 import fivestar.kTour.domain.User;
-import fivestar.kTour.Dto.*;
 import fivestar.kTour.repository.PlaceRepository;
 import fivestar.kTour.repository.PlanRepository;
 import fivestar.kTour.repository.UserRepository;
-import jakarta.transaction.Transactional;
+import fivestar.kTour.security.SecurityUser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 
-public class PlannerServiceImpl implements PlannerService{
+public class PlannerServiceImpl implements PlannerService {
     private static final Logger logger = LoggerFactory.getLogger(PlannerServiceImpl.class);
     private final PlaceRepository placeRepository;
     private final PlanRepository planRepository;
@@ -34,7 +36,7 @@ public class PlannerServiceImpl implements PlannerService{
         List<GetMyPlansResDto> response = new ArrayList<>();
 
         //사용자 email 체크
-        if(!userRepository.existsById(dto.userEmail())) {
+        if (!userRepository.existsById(dto.userEmail())) {
             throw new IllegalArgumentException("등록되지 않은 사용자 입니다.");
         }
 
@@ -42,9 +44,41 @@ public class PlannerServiceImpl implements PlannerService{
         List<Plan> plans = planRepository.findAllByUser_UserEmail(dto.userEmail());
         logger.info(plans.toString());
         //plans list 를 순회하며 places 및 response dto 설정
-        plans.forEach(plan->{
+        plans.forEach(plan -> {
             //places 를 placeNames 로 변환함
             //place name만 줄까? 그냥 다 줄까?
+            //name 만 주는 경우
+            //List<Place> places = placeRepository.findAllByPlan_PlanId(plan.getPlanId()).stream().map(place -> place.getPlaceName()).collect(Collectors.toList());
+            List<Place> places = placeRepository.findAllByPlan_PlanId(plan.getPlanId());
+
+            //plan, places pair 를 response에 추가함
+            logger.info(plan.getPlanName());
+            logger.info(places.toString());
+            response.add(new GetMyPlansResDto(plan.getPlanId(), plan.getPlanName(), places));
+        });
+        return response;
+    }
+
+    @Transactional(readOnly = true)
+    public List<GetMyPlansResDto> GetMyPlansV1(SecurityUser securityUser) {
+        //빈 response dto 생성
+        List<GetMyPlansResDto> response = new ArrayList<>();
+        String email = securityUser.getUsername();
+
+        log.info("email = {}", email);
+        //사용자 email 체크
+        if (!userRepository.existsById(email)) {
+            throw new RuntimeException("DB & Server Problem - OAuth2 Login 시 자동 가입");
+        }
+
+        //email 에 맞는 plans 받아오기
+        List<Plan> plans = planRepository.findAllByUser_UserEmail(email);
+        log.info("plans = {}", plans.toString());
+
+        //plans list 를 순회하며 places 및 response dto 설정
+        plans.forEach(plan -> {
+            //places 를 placeNames 로 변환함
+            //place name 만 줄까? 그냥 다 줄까?
             //name 만 주는 경우
             //List<Place> places = placeRepository.findAllByPlan_PlanId(plan.getPlanId()).stream().map(place -> place.getPlaceName()).collect(Collectors.toList());
             List<Place> places = placeRepository.findAllByPlan_PlanId(plan.getPlanId());
@@ -61,14 +95,14 @@ public class PlannerServiceImpl implements PlannerService{
     @Transactional
     public GlobalResponseDto AddNewPlan(AddNewPlanDto dto) {
         //사용자 email이 존재하는지 체크
-        if(!userRepository.existsById(dto.userEmail())) {
+        if (!userRepository.existsById(dto.userEmail())) {
             throw new IllegalArgumentException("등록되지 않은 사용자 입니다.");
         }
 
         User user = userRepository.findById(dto.userEmail()).orElseThrow(() -> new NoSuchElementException("User not found"));
 
         //plan table save
-        Plan newPlan = new Plan(dto.planName(),dto.planNote(),user);
+        Plan newPlan = new Plan(dto.planName(), dto.planNote(), user);
         planRepository.save(newPlan);
 
         //place table save
@@ -97,18 +131,18 @@ public class PlannerServiceImpl implements PlannerService{
 //        String userEmail,
 //        List<Plan> plans
 
-        if(!userRepository.existsById(dto.userEmail())) {
+        if (!userRepository.existsById(dto.userEmail())) {
             throw new IllegalArgumentException("등록되지 않은 사용자 입니다.");
         }
 //        User user = userRepository.findById(dto.getUserEmail()).get();
         logger.info(dto.toString());
         dto.plans().forEach(plan ->
-                    //plan id 로 plan을 찾아서 passed 를 dto 에서 제공하는 passed 값으로 변경함
+                //plan id 로 plan을 찾아서 passed 를 dto 에서 제공하는 passed 값으로 변경함
                 planRepository
-                    .findById(plan.getPlanId())
-                    .ifPresent(p -> p.setPassed(plan.getPassed())
-                    )
-            );
+                        .findById(plan.getPlanId())
+                        .ifPresent(p -> p.setPassed(plan.getPassed())
+                        )
+        );
 
         return new GlobalResponseDto(true);
     }

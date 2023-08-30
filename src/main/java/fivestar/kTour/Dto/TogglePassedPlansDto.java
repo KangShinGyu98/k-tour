@@ -2,8 +2,8 @@ package fivestar.kTour.Dto;
 
 
 import fivestar.kTour.domain.Plan;
-import jakarta.validation.constraints.NotBlank;
 
+import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 public record TogglePassedPlansDto (
