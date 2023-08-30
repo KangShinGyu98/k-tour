@@ -1,9 +1,9 @@
 package fivestar.kTour.domain;
 
-import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
@@ -22,6 +22,7 @@ public class Plan {
     @ManyToOne
     @JoinColumn(name = "user_email")
     private User user;
+
     public Plan(String planName,String planNote,User user){
         this.planName = planName;
         this.user = user;
