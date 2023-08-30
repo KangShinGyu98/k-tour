@@ -1,21 +1,22 @@
 package fivestar.kTour.service;
-import java.util.NoSuchElementException;
+
+import fivestar.kTour.Dto.*;
 import fivestar.kTour.domain.Place;
 import fivestar.kTour.domain.Plan;
 import fivestar.kTour.domain.User;
-import fivestar.kTour.Dto.*;
 import fivestar.kTour.repository.PlaceRepository;
 import fivestar.kTour.repository.PlanRepository;
 import fivestar.kTour.repository.UserRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
