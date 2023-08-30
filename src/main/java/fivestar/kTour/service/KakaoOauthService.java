@@ -14,6 +14,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.security.oauth2.client.registration.InMemoryClientRegistrationRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -39,10 +40,11 @@ public class KakaoOauthService implements OauthService {
      * 유저 인증 후 Jwt AccessToken 생성
      */
 
+    @Transactional
     public LoginResponseDto login(String providerName, String code) {
 
         ClientRegistration provider = inMemoryRepository.findByRegistrationId(providerName);
-        log.info("redirect uri = {}",provider.getRedirectUri());
+        log.info("redirect uri = {}", provider.getRedirectUri());
         OauthTokenResponseDto tokenResponse = getToken(code, provider);
         log.info("OauthAccessToken = {}", tokenResponse.access_token());
         User user = getUserProfile(providerName, tokenResponse, provider);
@@ -83,18 +85,24 @@ public class KakaoOauthService implements OauthService {
         }
 
         Oauth2UserInfo oauth2UserInfo = new KakaoUserInfo(userAttributes);
-        if(oauth2UserInfo.getProvider() == null) {
+        if (oauth2UserInfo.getProvider() == null) {
             throw new RuntimeException("provider is null");
         }
 
+        String email = oauth2UserInfo.getEmail();
+        String nickname = oauth2UserInfo.getNickName();
+        String imageUrl = oauth2UserInfo.getImageUrl();
+        Integer ageRange = oauth2UserInfo.getAgeRange();
         String oauth2Provider = oauth2UserInfo.getProvider();
         String providerId = oauth2UserInfo.getProviderId();
-        String email = oauth2UserInfo.getEmail();
+
+        log.info("ageRange={}", ageRange);
+        log.info("imageUrl={}", imageUrl);
 
         Optional<User> optionalUser = userRepository.findById(email);
 
         if (optionalUser.isEmpty()) {
-            User user = new User(email, oauth2Provider, providerId);
+            User user = new User(email, nickname, imageUrl, ageRange, oauth2Provider, providerId);
             userRepository.save(user);
             return user;
         } else {
