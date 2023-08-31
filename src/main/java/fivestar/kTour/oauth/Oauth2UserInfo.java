@@ -7,5 +7,5 @@ public interface Oauth2UserInfo {
     String getEmail();
     String getNickName();
     String getImageUrl();
-    Integer getAgeRange();
+    String getAgeRange();
 }
