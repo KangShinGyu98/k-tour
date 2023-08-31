@@ -9,28 +9,39 @@ import java.time.LocalDateTime;
 @Data
 @Entity
 @NoArgsConstructor
-@Table(name = "`User`", indexes = {
-        @Index(name = "idx_user_email_idx", columnList = "user_email")})
+@Table(name = "`User`")
 public class User {
 
     @Id
     @Column(name = "user_email")
     private String userEmail;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "user_profile_id")
-    private UserProfile userProfile;
+    private String nickname;
+
+    private String snsType;
+
+    private String snsId;
+
+    private String imageUrl;
 
     private String role;
+
+    private String ageRange;
 
     private LocalDateTime createAt;
 
     private LocalDateTime modifiedAt;
 
-    public User(String email, String nickname, String imageUrl, Integer ageRange, String provider, String providerId) {
+    public User(String email, String nickname, String imageUrl, String ageRange, String snsType, String snsId) {
         this.userEmail = email;
+        this.nickname = nickname;
+        this.snsType = snsType;
+        this.snsId = snsId;
+        this.imageUrl = imageUrl;
+        this.ageRange = ageRange;
         this.role = "ROLE_USER";
-        this.userProfile = new UserProfile(this, nickname, imageUrl, ageRange, provider, providerId);
+        this.createAt = LocalDateTime.now();
+        this.modifiedAt = LocalDateTime.now();
     }
 }
 
