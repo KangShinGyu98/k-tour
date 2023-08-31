@@ -92,7 +92,7 @@ public class KakaoOauthService implements OauthService {
         String email = oauth2UserInfo.getEmail();
         String nickname = oauth2UserInfo.getNickName();
         String imageUrl = oauth2UserInfo.getImageUrl();
-        Integer ageRange = oauth2UserInfo.getAgeRange();
+        String ageRange = oauth2UserInfo.getAgeRange();
         String oauth2Provider = oauth2UserInfo.getProvider();
         String providerId = oauth2UserInfo.getProviderId();
 
