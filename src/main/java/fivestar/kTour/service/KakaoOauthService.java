@@ -49,11 +49,11 @@ public class KakaoOauthService implements OauthService<KakaoOauthLoginParam> {
         log.info("redirect uri = {}", provider.getRedirectUri());
         OauthTokenResponseDto tokenResponse = getToken(params.code(), provider);
         log.info("OauthAccessToken = {}", tokenResponse.access_token());
-        User user = getUserProfile(params.provider(), tokenResponse, provider);
+        String email = getUserEmailFromKakao(params.provider(), tokenResponse, provider);
 
-        String accessToken = tokenService.generateToken(user.getUserEmail());
+        String accessToken = tokenService.generateToken(email);
         log.info("ServerAccessToken={}", accessToken);
-        return new LoginResponseDto(user.getUserEmail(), "BEARER_TYPE", accessToken);
+        return new LoginResponseDto(email, "BEARER_TYPE", accessToken);
     }
 
     private OauthTokenResponseDto getToken(String code, ClientRegistration provider) {
@@ -80,7 +80,7 @@ public class KakaoOauthService implements OauthService<KakaoOauthLoginParam> {
         return formData;
     }
 
-    private User getUserProfile(String providerName, OauthTokenResponseDto tokenResponse, ClientRegistration provider) {
+    private String getUserEmailFromKakao(String providerName, OauthTokenResponseDto tokenResponse, ClientRegistration provider) {
         Map<String, Object> userAttributes = getUserAttribute(provider, tokenResponse);
         if (!providerName.equals("kakao")) {
             throw new RuntimeException("invalid provider name");
@@ -106,10 +106,8 @@ public class KakaoOauthService implements OauthService<KakaoOauthLoginParam> {
         if (optionalUser.isEmpty()) {
             User user = new User(email, nickname, imageUrl, ageRange, oauth2Provider, providerId);
             userRepository.save(user);
-            return user;
-        } else {
-            return optionalUser.get();
         }
+        return email;
     }
 
     private Map<String, Object> getUserAttribute(ClientRegistration provider, OauthTokenResponseDto tokenResponse) {

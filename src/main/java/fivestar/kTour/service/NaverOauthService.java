@@ -49,11 +49,11 @@ public class NaverOauthService implements OauthService<NaverOauthLoginParam> {
         log.info("redirect uri = {}", provider.getRedirectUri());
         OauthTokenResponseDto tokenResponse = getToken(params.code(), provider, params.state());
         log.info("OauthAccessToken = {}", tokenResponse.access_token());
-        User user = getUserProfile(params.provider(), tokenResponse, provider);
+        String email = getUserEmailFromNaver(params.provider(), tokenResponse, provider);
 
-        String accessToken = tokenService.generateToken(user.getUserEmail());
+        String accessToken = tokenService.generateToken(email);
         log.info("ServerAccessToken={}", accessToken);
-        return new LoginResponseDto(user.getUserEmail(), "BEARER_TYPE", accessToken);
+        return new LoginResponseDto(email, "BEARER_TYPE", accessToken);
     }
 
     private OauthTokenResponseDto getToken(String code, ClientRegistration provider, String state) {
@@ -81,7 +81,7 @@ public class NaverOauthService implements OauthService<NaverOauthLoginParam> {
         return formData;
     }
 
-    private User getUserProfile(String providerName, OauthTokenResponseDto tokenResponse, ClientRegistration provider) {
+    private String getUserEmailFromNaver(String providerName, OauthTokenResponseDto tokenResponse, ClientRegistration provider) {
         Map<String, Object> userAttributes = getUserAttribute(provider, tokenResponse);
         if (!providerName.equals("naver")) {
             throw new RuntimeException("invalid provider name");
@@ -107,10 +107,8 @@ public class NaverOauthService implements OauthService<NaverOauthLoginParam> {
         if (optionalUser.isEmpty()) {
             User user = new User(email, nickname, imageUrl, ageRange, oauth2Provider, providerId);
             userRepository.save(user);
-            return user;
-        } else {
-            return optionalUser.get();
         }
+        return email;
     }
 
     private Map<String, Object> getUserAttribute(ClientRegistration provider, OauthTokenResponseDto tokenResponse) {
