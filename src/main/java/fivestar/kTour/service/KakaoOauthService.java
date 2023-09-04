@@ -3,6 +3,7 @@ package fivestar.kTour.service;
 import fivestar.kTour.Dto.LoginResponseDto;
 import fivestar.kTour.Dto.OauthTokenResponseDto;
 import fivestar.kTour.domain.User;
+import fivestar.kTour.oauth.KakaoOauthLoginParam;
 import fivestar.kTour.oauth.KakaoUserInfo;
 import fivestar.kTour.oauth.Oauth2UserInfo;
 import fivestar.kTour.repository.UserRepository;
@@ -27,7 +28,7 @@ import java.util.Optional;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class KakaoOauthService implements OauthService {
+public class KakaoOauthService implements OauthService<KakaoOauthLoginParam> {
 
     private final UserRepository userRepository;
     private final InMemoryClientRegistrationRepository inMemoryRepository;
@@ -41,13 +42,14 @@ public class KakaoOauthService implements OauthService {
      */
 
     @Transactional
-    public LoginResponseDto login(String providerName, String code) {
+    @Override
+    public LoginResponseDto login(KakaoOauthLoginParam params) {
 
-        ClientRegistration provider = inMemoryRepository.findByRegistrationId(providerName);
+        ClientRegistration provider = inMemoryRepository.findByRegistrationId(params.provider());
         log.info("redirect uri = {}", provider.getRedirectUri());
-        OauthTokenResponseDto tokenResponse = getToken(code, provider);
+        OauthTokenResponseDto tokenResponse = getToken(params.code(), provider);
         log.info("OauthAccessToken = {}", tokenResponse.access_token());
-        User user = getUserProfile(providerName, tokenResponse, provider);
+        User user = getUserProfile(params.provider(), tokenResponse, provider);
 
         String accessToken = tokenService.generateToken(user.getUserEmail());
         log.info("ServerAccessToken={}", accessToken);
