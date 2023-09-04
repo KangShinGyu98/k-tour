@@ -3,8 +3,8 @@ package fivestar.kTour.service;
 import fivestar.kTour.Dto.LoginResponseDto;
 import fivestar.kTour.Dto.OauthTokenResponseDto;
 import fivestar.kTour.domain.User;
-import fivestar.kTour.oauth.KakaoOauthLoginParam;
-import fivestar.kTour.oauth.KakaoUserInfo;
+import fivestar.kTour.oauth.NaverOauthLoginParam;
+import fivestar.kTour.oauth.NaverUserInfo;
 import fivestar.kTour.oauth.Oauth2UserInfo;
 import fivestar.kTour.repository.UserRepository;
 import fivestar.kTour.security.service.TokenService;
@@ -28,7 +28,7 @@ import java.util.Optional;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class KakaoOauthService implements OauthService<KakaoOauthLoginParam> {
+public class NaverOauthService implements OauthService<NaverOauthLoginParam> {
 
     private final UserRepository userRepository;
     private final InMemoryClientRegistrationRepository inMemoryRepository;
@@ -43,20 +43,20 @@ public class KakaoOauthService implements OauthService<KakaoOauthLoginParam> {
 
     @Transactional
     @Override
-    public LoginResponseDto login(KakaoOauthLoginParam params) {
+    public LoginResponseDto login(NaverOauthLoginParam params) {
 
         ClientRegistration provider = inMemoryRepository.findByRegistrationId(params.provider());
         log.info("redirect uri = {}", provider.getRedirectUri());
-        OauthTokenResponseDto tokenResponse = getToken(params.code(), provider);
+        OauthTokenResponseDto tokenResponse = getToken(params.code(), provider, params.state());
         log.info("OauthAccessToken = {}", tokenResponse.access_token());
-        String email = getUserEmailFromKakao(params.provider(), tokenResponse, provider);
+        String email = getUserEmailFromNaver(params.provider(), tokenResponse, provider);
 
         String accessToken = tokenService.generateToken(email);
         log.info("ServerAccessToken={}", accessToken);
         return new LoginResponseDto(email, "BEARER_TYPE", accessToken);
     }
 
-    private OauthTokenResponseDto getToken(String code, ClientRegistration provider) {
+    private OauthTokenResponseDto getToken(String code, ClientRegistration provider, String state) {
         return WebClient.create()
                 .post()
                 .uri(provider.getProviderDetails().getTokenUri())
@@ -64,29 +64,30 @@ public class KakaoOauthService implements OauthService<KakaoOauthLoginParam> {
                     header.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
                     header.setAcceptCharset(Collections.singletonList(StandardCharsets.UTF_8));
                 })
-                .bodyValue(requestToken(code, provider))
+                .bodyValue(requestToken(code, provider, state))
                 .retrieve()
                 .bodyToMono(OauthTokenResponseDto.class)
                 .block();
     }
 
-    private MultiValueMap<String, String> requestToken(String code, ClientRegistration provider) {
+    private MultiValueMap<String, String> requestToken(String code, ClientRegistration provider, String state) {
         MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
         formData.add("code", code);
         formData.add("grant_type", "authorization_code");
         formData.add("redirect_uri", provider.getRedirectUri());
         formData.add("client_secret", provider.getClientSecret());
         formData.add("client_id", provider.getClientId());
+        formData.add("state", state);
         return formData;
     }
 
-    private String getUserEmailFromKakao(String providerName, OauthTokenResponseDto tokenResponse, ClientRegistration provider) {
+    private String getUserEmailFromNaver(String providerName, OauthTokenResponseDto tokenResponse, ClientRegistration provider) {
         Map<String, Object> userAttributes = getUserAttribute(provider, tokenResponse);
-        if (!providerName.equals("kakao")) {
+        if (!providerName.equals("naver")) {
             throw new RuntimeException("invalid provider name");
         }
 
-        Oauth2UserInfo oauth2UserInfo = new KakaoUserInfo(userAttributes);
+        Oauth2UserInfo oauth2UserInfo = new NaverUserInfo(userAttributes);
         if (oauth2UserInfo.getProvider() == null) {
             throw new RuntimeException("provider is null");
         }
