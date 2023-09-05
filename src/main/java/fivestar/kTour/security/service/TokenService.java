@@ -7,13 +7,11 @@ import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.PostConstruct;
+import javax.servlet.http.HttpServletRequest;
 import java.security.Key;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -27,7 +25,6 @@ public class TokenService {
     @Value("${jwt.secret}")
     private String secretKey;
     private Key key;
-    private final UserDetailsService jpaUserDetailsService;
 
     @PostConstruct
     public void init() {
@@ -47,9 +44,13 @@ public class TokenService {
                 .compact();
     }
 
-    public Authentication createAuthentication(String email) {
-        UserDetails userDetails = jpaUserDetailsService.loadUserByUsername(email);
-        return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
+    // Request Header 에서 토큰 정보를 꺼내오기
+    public String resolveToken(HttpServletRequest request) {
+        String bearerToken = request.getHeader("Authorization");
+        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
+            return bearerToken.substring(7);
+        }
+        return null;
     }
 
     public boolean isTokenValid(String token) {
